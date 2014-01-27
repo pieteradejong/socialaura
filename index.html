@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>HTML5 Template</title>
+  <meta name="description" content="HTML5 Template">
+  <meta name="author" content="Pieter de Jong">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <style>
+    h1 {
+      /*font-family: "Garamond", Georgia, serif;*/
+      font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    }
+
+    #fb-root {
+      /*border: 1px solid #3b5998;*/
+    }
+
+    ul#friends {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      width: 400px;
+    }
+    ul#friends li {
+      margin: 4px 0;
+      padding: 10px;
+      background: #D5D6F0;
+      
+      font-family: Verdana;
+      font-size: 11px;
+    }
+
+  </style>
+
+</head>
+
+<body>
+  <div class="fb-like" data-send="true" data-width="450" data-show-faces="true"></div>
+  <fb:login-button autologoutlink="true" onlogin="OnRequestPermission();"></fb:login-button>
+  <div id="fb-root"></div>
+  
+    <h1>Facebook Friends</h1>
+    <ul id="friends">
+    </ul>
+    
+    <script>
+    var facebookInit = function() {
+       FB.login(function(response) {
+         if (response.authResponse) {
+           console.log('Welcome!  Fetching your information.... ');
+           FB.api('/me/friends', function(response) {
+             var numFriends = response.data.length;
+             $("h1").append($("<div>Total friends: " + numFriends + "</div>"));
+             _.each(response, function(v, i) {
+               _.each(v, function(friend, j) {
+                console.log(friend.id);
+                $("#friends").append($("<li class='fb-friend'>" + friend.name + "   (" + friend.id + ")" + "</li>"));
+               });
+             });
+           });
+           FB.api('/me/og.likes', function(response) {
+            console.log(response);
+           }
+
+            );
+         } else {
+           console.log('User cancelled login or did not fully authorize.');
+         }
+       }, {scope: 'user_likes'});
+      }
+    
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '1417544505152599',
+          cookie     : true,
+          oauth      : true,
+          status     : true,
+          xfbml      : true
+        });
+        facebookInit();
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "https://connect.facebook.net/en_US/all.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+
+      $(document).ready(function() {
+        $("#friends").on("mouseover", ".fb-friend", function(){
+          $(this).css("background", "orange");
+        });
+        $("#friends").on("mouseout", ".fb-friend", function(){
+          $(this).css("background", "#D5D6F0");
+        });
+      });
+
+      /// d3:
+
+      // var testData = function(n) {
+      //   var data = Array(n);
+      //   for(var i = 0; i < n; i++) {
+      //     data[i] = Math.random() * 10;
+      //   }
+      //   return data;
+      // };
+      var values= d3.range(1000).map(d3.random(normal(1)));
+
+      
+
+
+    </script>
+
+</body>
+</html>
